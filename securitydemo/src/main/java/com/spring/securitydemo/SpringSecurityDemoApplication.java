@@ -2,9 +2,12 @@ package com.spring.securitydemo;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
+@EnableJpaRepositories(basePackages = "com.spring.securitydemo.repository")
+@EntityScan(basePackages = "com.spring.securitydemo.model")
 public class SpringSecurityDemoApplication {
 
 	public static void main(String[] args) {

@@ -1,0 +1,46 @@
+# Top-most EditorConfig file
+root = true
+
+# Global defaults
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+# Java files
+[*.java]
+indent_size = 4
+max_line_length = 120
+
+# Kotlin files
+[*.kt]
+indent_size = 4
+
+# XML and configuration files (Spring configs, POMs)
+[*.{xml,yml,yaml,properties}]
+indent_size = 2
+
+# JavaScript/TypeScript
+[*.{js,ts,jsx,tsx}]
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_size = 2
+
+# Markdown (docs)
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
+
+# Shell scripts
+[*.sh]
+end_of_line = lf
+charset = utf-8
+
+# Gitignore
+[.gitignore]
+insert_final_newline = false
