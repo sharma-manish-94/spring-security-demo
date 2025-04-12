@@ -1,5 +1,6 @@
 package com.spring.securitydemo.config;
 
+import com.spring.securitydemo.exceptionhandling.CustomAccessDeniedHandler;
 import com.spring.securitydemo.exceptionhandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +31,8 @@ public class SecurityConfig {
         httpSecurity.httpBasic(hbc ->
             hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         httpSecurity.csrf(CsrfConfigurer::disable);
+        httpSecurity.exceptionHandling(exceptionConfig ->
+            exceptionConfig.accessDeniedHandler(new CustomAccessDeniedHandler()));
         return httpSecurity.build();
     }
 
