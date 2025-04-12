@@ -9,6 +9,7 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -26,13 +27,22 @@ public class SecurityConfig {
             .authorizeHttpRequests(requests ->
                 requests.requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").
                     authenticated()
-                    .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
+                    .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession",
+                        "/expiredSession").permitAll());
         httpSecurity.formLogin(withDefaults());
         httpSecurity.httpBasic(hbc ->
             hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         httpSecurity.csrf(CsrfConfigurer::disable);
         httpSecurity.exceptionHandling(exceptionConfig ->
             exceptionConfig.accessDeniedHandler(new CustomAccessDeniedHandler()));
+        httpSecurity.sessionManagement(config ->
+            config
+                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::migrateSession)
+                .invalidSessionUrl("/invalidSession")
+                .maximumSessions(3)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/expiredSession"));
+
         return httpSecurity.build();
     }
 

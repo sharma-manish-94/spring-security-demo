@@ -29,7 +29,9 @@ public class SecurityConfigProd {
             .authorizeHttpRequests(requests ->
                 requests.requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").
                     authenticated()
-                    .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
+                    .requestMatchers("/notices", "/contact", "/error", "/register", "/invalidSession",
+                        "/expiredSession").permitAll());
+
         httpSecurity.formLogin(withDefaults());
         httpSecurity.httpBasic(withDefaults());
         httpSecurity.csrf(CsrfConfigurer::disable);
@@ -37,6 +39,11 @@ public class SecurityConfigProd {
             hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
         httpSecurity.exceptionHandling(exceptionConfig ->
             exceptionConfig.accessDeniedHandler(new CustomAccessDeniedHandler()));
+        httpSecurity.sessionManagement(config ->
+            config.invalidSessionUrl("/invalidSession")
+                .maximumSessions(1)
+                .maxSessionsPreventsLogin(true)
+                .expiredUrl("/expiredSession"));
         return httpSecurity.build();
     }
 
