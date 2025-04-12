@@ -1,6 +1,5 @@
 package com.spring.securitydemo.config;
 
-import com.spring.securitydemo.exceptionhandling.CustomBasicAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,19 +15,21 @@ import org.springframework.security.web.authentication.password.HaveIBeenPwnedRe
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
-@Profile("dev")
-public class SecurityConfig {
+@Profile("prod")
+public class SecurityConfigProd {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.requiresChannel(config -> config.anyRequest().requiresInsecure()) // only http for dev
+        httpSecurity
+            .requiresChannel(
+                requiresChannelConfig -> requiresChannelConfig.anyRequest().requiresSecure()
+            ) // only https for prod
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(requests ->
                 requests.requestMatchers("/myAccount", "/myBalance", "/myLoans", "/myCards").
                     authenticated()
                     .requestMatchers("/notices", "/contact", "/error", "/register").permitAll());
         httpSecurity.formLogin(withDefaults());
-        httpSecurity.httpBasic(hbc ->
-            hbc.authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+        httpSecurity.httpBasic(withDefaults());
         httpSecurity.csrf(CsrfConfigurer::disable);
         return httpSecurity.build();
     }
